@@ -2,6 +2,8 @@ package com.girish.openpr
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.girish.openpr.model.data.PullRequest
@@ -24,25 +26,55 @@ class MainActivity : AppCompatActivity() {
         getButton.setOnClickListener {
             val owner = ownerEditText.text.toString()
             val repo = repoEditText.text.toString()
-
-            viewModel.getPullRequests(owner, repo)
-                .subscribe(this@MainActivity::handleResults, this@MainActivity::handleError)
+            viewModel.fetchPullRequest(owner, repo)
         }
 
         // init recyclerview
-        // TODO: should you be initializing reycler view here?
+        // TODO: should you be initializing recycler view here?
         prRecyclerView.layoutManager = LinearLayoutManager(this)
         adapter = PRListAdapter()
         prRecyclerView.adapter = adapter
+
+        // TODO: can you think of a better way to update UI?
+        // TODO: should all views be moved to recycler view as different view types?
+        viewModel.getUIState().observe(this, Observer {
+            when(it) {
+                is PRViewModel.UIState.SUCCESS -> onPRFetched(it.pullRequests)
+                is PRViewModel.UIState.LOADING -> showLoadingView()
+                is PRViewModel.UIState.EMPTY -> showEmptyView()
+                is PRViewModel.UIState.ERROR -> showErrorView(it.message)
+            }
+        })
     }
 
-    private fun handleResults(pullRequests: List<PullRequest>) {
-        //println(pullRequests.toString())
+    private fun showErrorView(message: String?) {
+        hideAllViews()
+        // TODO: use string resource
+        errorView.text = if (message != null) message else "Some error occurred"
+        errorView.visibility = View.VISIBLE
+    }
+
+    private fun hideAllViews() {
+        prRecyclerView.visibility = View.GONE
+        emptyView.visibility = View.GONE
+        loadingView.visibility = View.GONE
+        errorView.visibility = View.GONE
+    }
+
+    private fun showEmptyView() {
+        hideAllViews()
+        emptyView.visibility = View.VISIBLE
+    }
+
+    private fun showLoadingView() {
+        hideAllViews()
+        loadingView.visibility = View.VISIBLE
+    }
+
+    private fun onPRFetched(pullRequests: List<PullRequest>) {
+        hideAllViews()
         adapter.setItems(pullRequests)
-    }
-
-    private fun handleError(throwable: Throwable) {
-        println(throwable.toString())
+        prRecyclerView.visibility = View.VISIBLE
     }
 
     private fun injectDependencies() {
