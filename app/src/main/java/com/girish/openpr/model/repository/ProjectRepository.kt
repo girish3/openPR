@@ -22,9 +22,11 @@ object ProjectRepository {
 
     /*--------------------------- USE CASES ------------------------------*/
 
-    fun getPullRequests(owner : String, repo: String) : Observable<List<PullRequest>> {
+    fun getPullRequests(author : String, repo: String) : Observable<List<PullRequest>> {
+
+        // TODO: is there a scheduler for network requests?
         val observable = githubService
-            .getPullRequests(owner, repo)
+            .getPullRequests(author, repo)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
 

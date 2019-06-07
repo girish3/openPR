@@ -18,7 +18,7 @@ class PRViewModel : ViewModel() {
     }
 
     // TODO: should you rather be returning LiveData?
-    fun getPullRequests(owner: String, repo: String) : Observable<List<PullRequest>> {
-        return repository.getPullRequests(owner, repo)
+    fun getPullRequests(author: String, repo: String) : Observable<List<PullRequest>> {
+        return repository.getPullRequests(author, repo)
     }
 }
