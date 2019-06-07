@@ -22,10 +22,12 @@ class PRViewModel : ViewModel() {
 
     // TODO: should you rather be returning LiveData?
     fun fetchPullRequest(author: String, repo: String) {
+        // putting ui into loading state.
+        uiState.value = UIState.LOADING()
+
         // TODO: RxJava use disposable?
         repository.getPullRequests(author, repo)
             .subscribe(this@PRViewModel::handleResults, this@PRViewModel::handleError)
-        uiState.value = UIState.LOADING()
     }
 
     private fun handleResults(pullRequests: List<PullRequest>) {

@@ -9,7 +9,7 @@ import retrofit2.Retrofit
 object ProjectRepository {
 
     private lateinit var retrofit: Retrofit
-    private lateinit var githubService : GithubApiService
+    private lateinit var githubService: GithubApiService
 
     init {
         injectDependencies();
@@ -22,7 +22,7 @@ object ProjectRepository {
 
     /*--------------------------- USE CASES ------------------------------*/
 
-    fun getPullRequests(author : String, repo: String) : Observable<List<PullRequest>> {
+    fun getPullRequests(author: String, repo: String): Observable<List<PullRequest>> {
 
         // TODO: is there a scheduler for network requests?
         val observable = githubService
