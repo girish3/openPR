@@ -29,6 +29,7 @@ class PRListAdapter() : RecyclerView.Adapter<PRListAdapter.MyViewHolder>() {
 
     fun setItems(items: List<PullRequest>) {
         prList = items
+        notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
