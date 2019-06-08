@@ -7,5 +7,5 @@ data class PullRequest(
     @SerializedName("title") val title: String,
     @SerializedName("body") val body: String,
     @SerializedName("html_url") val prPageUrl: String,
-    @SerializedName("number") val prNumber: String,
+    @SerializedName("number") val prNumber: String
 )
