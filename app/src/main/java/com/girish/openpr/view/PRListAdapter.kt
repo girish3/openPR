@@ -1,13 +1,10 @@
 package com.girish.openpr.view
 
-import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
+import com.girish.openpr.R
 import com.girish.openpr.model.data.PullRequest
 
-class PRListAdapter : ListAdapter<PullRequest, PRViewHolder>(PR_COMPARATOR) {
-
-    var prList: List<PullRequest> = ArrayList()
+class PRListAdapter : DataBindingAdapter<PullRequest>(PR_COMPARATOR) {
 
     companion object {
         private val PR_COMPARATOR = object : DiffUtil.ItemCallback<PullRequest>() {
@@ -19,16 +16,7 @@ class PRListAdapter : ListAdapter<PullRequest, PRViewHolder>(PR_COMPARATOR) {
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, position: Int) : PRViewHolder {
-        return PRViewHolder.create(parent)
-    }
-
-    fun setItems(items: List<PullRequest>) {
-        prList = items
-        notifyDataSetChanged()
-    }
-
-    override fun onBindViewHolder(holder: PRViewHolder, position: Int) {
-        holder.bind(getItem(position))
+    override fun getItemViewType(position: Int): Int {
+        return R.layout.pr_list_item
     }
 }

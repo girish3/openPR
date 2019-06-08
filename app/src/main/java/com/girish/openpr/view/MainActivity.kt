@@ -1,4 +1,4 @@
-package com.girish.openpr
+package com.girish.openpr.view
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
@@ -10,10 +10,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.girish.openpr.model.data.PullRequest
-import com.girish.openpr.view.PRListAdapter
 import com.girish.openpr.viewmodel.PRViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.inputmethod.InputMethodManager
+import com.girish.openpr.Injector
+import com.girish.openpr.R
 
 class MainActivity : AppCompatActivity() {
 
@@ -98,6 +99,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hideAllViews() {
+        startView.visibility = View.GONE
         prRecyclerView.visibility = View.GONE
         emptyView.visibility = View.GONE
         loadingView.visibility = View.GONE
