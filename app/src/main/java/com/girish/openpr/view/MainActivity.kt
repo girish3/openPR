@@ -61,8 +61,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showErrorView(message: String?) {
         hideAllViews()
-        // TODO: use string resource
-        errorView.text = if (message != null) message else "Some error occurred"
+        errorView.text = if (message != null) message else getString(R.string.default_error_message)
         errorView.visibility = View.VISIBLE
     }
 

@@ -5,5 +5,6 @@
     <string name="start_view_text">Enter above the author and repository name to list down Pull Requests</string>
     <string name="author_name_hint">author name</string>
     <string name="repo_name_hint">repo name</string>
+    <string name="default_error_message">Some error occurred, Please try again</string>
 
 </resources>
