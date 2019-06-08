@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun onPRFetched(pullRequests: List<PullRequest>) {
         hideAllViews()
-        adapter.setItems(pullRequests)
+        adapter.submitList(pullRequests)
         prRecyclerView.visibility = View.VISIBLE
     }
 
