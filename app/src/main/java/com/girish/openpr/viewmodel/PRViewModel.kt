@@ -7,35 +7,39 @@ import androidx.lifecycle.ViewModel
 import com.girish.openpr.model.data.PullRequest
 import com.girish.openpr.model.repository.ProjectRepository
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+
 
 class PRViewModel(val repository: ProjectRepository) : ViewModel() {
-
     private val TAG = "PRViewModel"
     private val uiState : MutableLiveData<UIState> = MutableLiveData()
     private val THRESHOLD: Int = 5
     private val _pullRequests = ArrayList<PullRequest>()
     private var isFetching = false
     private var hasMoreData = true
+    private var compositeDisposable = CompositeDisposable()
 
-    // TODO: should you rather be returning LiveData?
     fun fetchPullRequest(author: String, repo: String) {
         // New Request
         uiState.value = UIState.LOADING()
         _pullRequests.clear()
         hasMoreData = true
 
-        // TODO: RxJava use disposable?
-        repository.getPullRequests(author, repo)
+        val disposable = repository.getPullRequests(author, repo)
             .subscribe(this@PRViewModel::handleResults, this@PRViewModel::handleError)
+        compositeDisposable.add(disposable)
+
     }
 
     fun fetchMore() {
         // TODO: handle error
-        repository.getMorePullRequests()
+        val disposable = repository.getMorePullRequests()
             .subscribe({
                 isFetching = false;
                 handleResults(it)
             })
+        compositeDisposable.add(disposable)
     }
 
     private fun handleResults(pullRequests: List<PullRequest>) {
@@ -77,5 +81,9 @@ class PRViewModel(val repository: ProjectRepository) : ViewModel() {
             isFetching = true;
             fetchMore()
         }
+    }
+
+    override fun onCleared() {
+        compositeDisposable.dispose()
     }
 }

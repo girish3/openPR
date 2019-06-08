@@ -34,7 +34,6 @@ open class ProjectRepository(var githubService : GithubApiService) {
 
     private fun getPullRequestsInternal(): Observable<List<PullRequest>> {
 
-        // TODO: is there a scheduler for network requests?
         val observable = githubService
             .getPullRequests(author, repo, lastPageNo, PAGE_SIZE)
             .subscribeOn(Schedulers.io())
