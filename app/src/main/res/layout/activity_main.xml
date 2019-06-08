@@ -8,25 +8,32 @@
         android:layout_margin="10dp"
         tools:context=".MainActivity">
 
-    <EditText
-        android:id="@+id/ownerEditText"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="author"
-        android:padding="10dp"/>
+        android:orientation="horizontal">
 
-    <EditText
-        android:id="@+id/repoEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="repo name"
-        android:padding="10dp"/>
+        <EditText
+                android:id="@+id/ownerEditText"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="author"
+                android:imeOptions="actionSearch"
+                android:inputType="textNoSuggestions"
+                android:padding="10dp"/>
 
-    <Button
-        android:id="@+id/getButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="GET"/>
+        <EditText
+                android:id="@+id/repoEditText"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="repo name"
+                android:imeOptions="actionSearch"
+                android:inputType="textNoSuggestions"
+                android:padding="10dp"/>
+
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/data_container"

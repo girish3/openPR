@@ -1,8 +1,12 @@
 package com.girish.openpr
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,6 +14,7 @@ import com.girish.openpr.model.data.PullRequest
 import com.girish.openpr.view.PRListAdapter
 import com.girish.openpr.viewmodel.PRViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import android.view.inputmethod.InputMethodManager
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,11 +28,8 @@ class MainActivity : AppCompatActivity() {
         // TODO: should you create an injector interface if time doesn't permit to use Dagger?
         injectDependencies()
 
-        getButton.setOnClickListener {
-            val owner = ownerEditText.text.toString()
-            val repo = repoEditText.text.toString()
-            viewModel.fetchPullRequest(owner, repo)
-        }
+        repoEditText.setOnEditorActionListener(this::onEnterClick)
+        ownerEditText.setOnEditorActionListener(this::onEnterClick)
 
         // init recyclerview
         // TODO: should you be initializing recycler view here?
@@ -54,6 +56,18 @@ class MainActivity : AppCompatActivity() {
         // TODO: use string resource
         errorView.text = if (message != null) message else "Some error occurred"
         errorView.visibility = View.VISIBLE
+    }
+
+    fun onEnterClick(v: View, actionId: Int, event: KeyEvent?): Boolean {
+        if (actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_SEARCH) {
+            val owner = ownerEditText.text.toString()
+            val repo = repoEditText.text.toString()
+            viewModel.fetchPullRequest(owner, repo)
+            hideKeyboard()
+            return true
+        }
+
+        return false
     }
 
     private fun hideAllViews() {
@@ -96,5 +110,10 @@ class MainActivity : AppCompatActivity() {
                 viewModel.onListScrolled(lastVisibleItem, totalItemCount)
             }
         })
+    }
+
+    fun hideKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(repoEditText.getWindowToken(), 0)
     }
 }
