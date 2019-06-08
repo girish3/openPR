@@ -12,8 +12,7 @@ import com.girish.openpr.viewmodel.ViewModelFactory
 object Injector {
 
     private fun provideRepository(): ProjectRepository {
-        return ProjectRepository(RetrofitClient.getInstance(),
-            RetrofitClient.getInstance().create(GithubApiService::class.java))
+        return ProjectRepository(RetrofitClient.getInstance().create(GithubApiService::class.java))
     }
 
     fun provideViewModelFactory(): ViewModelProvider.Factory {

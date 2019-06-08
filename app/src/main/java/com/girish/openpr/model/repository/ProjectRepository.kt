@@ -1,12 +1,12 @@
 package com.girish.openpr.model.repository
 
+import androidx.annotation.VisibleForTesting
 import com.girish.openpr.model.data.PullRequest
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import retrofit2.Retrofit
 
-class ProjectRepository(val retrofit: Retrofit, var githubService : GithubApiService) {
+open class ProjectRepository(var githubService : GithubApiService) {
 
     private val PAGE_SIZE = 10
     // query dependent values
@@ -16,7 +16,8 @@ class ProjectRepository(val retrofit: Retrofit, var githubService : GithubApiSer
 
     /*--------------------------- USE CASES ------------------------------*/
 
-    fun getPullRequests(author: String, repo: String): Observable<List<PullRequest>> {
+    @VisibleForTesting
+    open fun getPullRequests(author: String, repo: String): Observable<List<PullRequest>> {
 
         // setting new values
         lastPageNo = 1
