@@ -1,45 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="10dp">
-
-    <ImageView
-        android:id="@+id/avatar"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@android:color/darker_gray"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="10dp"/>
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
+<layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:bind="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable name="pr" type="com.girish.openpr.model.data.PullRequest" />
+    </data>
+    <RelativeLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/avatar"
-        android:textStyle="bold"
-        android:maxLines="1"
-        android:ellipsize="end"
-        tools:text="sample title"/>
+        android:layout_margin="10dp">
 
-    <TextView
-        android:id="@+id/info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/avatar"
-        android:layout_below="@id/title"
-        tools:text="#1234 opened by Jake Wharton"/>
+        <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@android:color/darker_gray"
+            android:layout_centerVertical="true"
+            bind:imageUrl="@{pr.author.avatarUrl}"
+            android:layout_marginRight="10dp"/>
 
-    <TextView
-        android:id="@+id/body"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/avatar"
-        android:layout_below="@id/info"
-        android:maxLines="1"
-        android:ellipsize="end"
-        tools:text="description of the PR"/>
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/avatar"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end"
+            tools:text="sample title"
+            android:text="@{pr.title}"/>
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/avatar"
+            android:textStyle="italic"
+            android:layout_below="@id/title"
+            tools:text="#1234 opened by Jake Wharton"
+            android:text="@{@string/info_text(pr.prNumber, pr.author.username)}"/>
+
+        <TextView
+            android:id="@+id/body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/avatar"
+            android:layout_below="@id/info"
+            android:maxLines="1"
+            android:ellipsize="end"
+            tools:text="description of the PR"
+            android:text="@{pr.body}"/>
+
+    </RelativeLayout>
+</layout>

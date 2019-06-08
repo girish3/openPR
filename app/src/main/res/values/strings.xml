@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Open PR</string>
+    <string name="info_text">%1$s opened by %2$s</string>
+    <string name="empty_view_text">There are no active pull request</string>
+    <string name="start_view_text">Enter above the author and repository name to list down Pull Requests</string>
+    <string name="author_name_hint">author name</string>
+    <string name="repo_name_hint">repo name</string>
+
 </resources>
