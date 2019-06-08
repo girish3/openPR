@@ -1,5 +1,6 @@
 package com.girish.openpr.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,7 @@ import io.reactivex.Observable
 
 class PRViewModel : ViewModel() {
 
+    private val TAG = "PRViewModel"
     private lateinit var repository : ProjectRepository
     private val uiState : MutableLiveData<UIState> = MutableLiveData()
     private val THRESHOLD: Int = 5
@@ -47,16 +49,19 @@ class PRViewModel : ViewModel() {
 
     private fun handleResults(pullRequests: List<PullRequest>) {
         if (_pullRequests.isEmpty() && pullRequests.isEmpty()) {
+            Log.i(TAG, "There are no pull requests")
             uiState.value = UIState.EMPTY()
             return
         }
 
         if (!pullRequests.isEmpty()) {
+            Log.i(TAG, "fetched ${pullRequests.size} pull requests")
             _pullRequests.addAll(pullRequests)
             uiState.value = UIState.SUCCESS(_pullRequests)
             return
         }
 
+        Log.i(TAG, "There are no more pull requests")
         hasMoreData = false
     }
 
