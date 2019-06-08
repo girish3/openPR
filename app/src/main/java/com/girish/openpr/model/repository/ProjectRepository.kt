@@ -10,6 +10,12 @@ object ProjectRepository {
 
     private lateinit var retrofit: Retrofit
     private lateinit var githubService: GithubApiService
+    private const val PAGE_SIZE = 10
+
+    // query dependent values
+    private var lastPageNo = 1
+    private var author = ""
+    private var repo = ""
 
     init {
         injectDependencies();
@@ -24,9 +30,24 @@ object ProjectRepository {
 
     fun getPullRequests(author: String, repo: String): Observable<List<PullRequest>> {
 
+        // setting new values
+        lastPageNo = 1
+        this.author = author
+        this.repo = repo
+
+        return getPullRequestsInternal()
+    }
+
+    fun getMorePullRequests(): Observable<List<PullRequest>> {
+        lastPageNo += 1
+        return getPullRequestsInternal()
+    }
+
+    private fun getPullRequestsInternal(): Observable<List<PullRequest>> {
+
         // TODO: is there a scheduler for network requests?
         val observable = githubService
-            .getPullRequests(author, repo)
+            .getPullRequests(author, repo, lastPageNo, PAGE_SIZE)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
 

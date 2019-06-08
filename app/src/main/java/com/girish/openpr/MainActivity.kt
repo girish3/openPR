@@ -45,6 +45,8 @@ class MainActivity : AppCompatActivity() {
                 is PRViewModel.UIState.ERROR -> showErrorView(it.message)
             }
         })
+
+        setupScrollListener()
     }
 
     private fun showErrorView(message: String?) {
@@ -79,5 +81,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun injectDependencies() {
         viewModel = ViewModelProviders.of(this).get(PRViewModel::class.java)
+    }
+
+    private fun setupScrollListener() {
+        val layoutManager = prRecyclerView.layoutManager as LinearLayoutManager
+
+        prRecyclerView.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+
+            override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val totalItemCount = layoutManager.itemCount
+                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+
+                viewModel.onListScrolled(lastVisibleItem, totalItemCount)
+            }
+        })
     }
 }
