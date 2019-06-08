@@ -13,7 +13,8 @@ class PRViewModel : ViewModel() {
     private val uiState : MutableLiveData<UIState> = MutableLiveData()
     private val THRESHOLD: Int = 5
     private val _pullRequests = ArrayList<PullRequest>()
-    private var isFetching: Boolean = false
+    private var isFetching = false
+    private var hasMoreData = true
 
     init {
         injectDependencies()
@@ -28,6 +29,7 @@ class PRViewModel : ViewModel() {
         // New Request
         uiState.value = UIState.LOADING()
         _pullRequests.clear()
+        hasMoreData = true
 
         // TODO: RxJava use disposable?
         repository.getPullRequests(author, repo)
@@ -35,6 +37,7 @@ class PRViewModel : ViewModel() {
     }
 
     fun fetchMore() {
+        // TODO: handle error
         repository.getMorePullRequests()
             .subscribe({
                 isFetching = false;
@@ -43,12 +46,18 @@ class PRViewModel : ViewModel() {
     }
 
     private fun handleResults(pullRequests: List<PullRequest>) {
-        if (pullRequests.size > 0) {
+        if (_pullRequests.isEmpty() && pullRequests.isEmpty()) {
+            uiState.value = UIState.EMPTY()
+            return
+        }
+
+        if (!pullRequests.isEmpty()) {
             _pullRequests.addAll(pullRequests)
             uiState.value = UIState.SUCCESS(_pullRequests)
-        } else {
-            uiState.value = UIState.EMPTY()
+            return
         }
+
+        hasMoreData = false
     }
 
     private fun handleError(throwable: Throwable) {
@@ -67,7 +76,8 @@ class PRViewModel : ViewModel() {
     }
 
     fun onListScrolled(lastVisibleItemPosition: Int, totalItemCount: Int) {
-        if (!isFetching && (totalItemCount - lastVisibleItemPosition <= THRESHOLD)) {
+        if (!isFetching && hasMoreData
+            && (totalItemCount - lastVisibleItemPosition <= THRESHOLD)) {
             isFetching = true;
             fetchMore()
         }
