@@ -6,25 +6,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 
-object ProjectRepository {
+class ProjectRepository(val retrofit: Retrofit, var githubService : GithubApiService) {
 
-    private lateinit var retrofit: Retrofit
-    private lateinit var githubService: GithubApiService
-    private const val PAGE_SIZE = 10
-
+    private val PAGE_SIZE = 10
     // query dependent values
     private var lastPageNo = 1
     private var author = ""
     private var repo = ""
-
-    init {
-        injectDependencies();
-    }
-
-    private fun injectDependencies() {
-        retrofit = RetrofitClient.getInstance()
-        githubService = retrofit.create(GithubApiService::class.java)
-    }
 
     /*--------------------------- USE CASES ------------------------------*/
 

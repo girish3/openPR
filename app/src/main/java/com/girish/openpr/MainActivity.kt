@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,20 +24,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // TODO: should you create an injector interface if time doesn't permit to use Dagger?
         injectDependencies()
+        setUpRecyclerView()
 
-        repoEditText.setOnEditorActionListener(this::onEnterClick)
-        ownerEditText.setOnEditorActionListener(this::onEnterClick)
-
-        // init recyclerview
-        // TODO: should you be initializing recycler view here?
-        prRecyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = PRListAdapter()
-        prRecyclerView.adapter = adapter
-
-        // TODO: can you think of a better way to update UI?
-        // TODO: should all views be moved to recycler view as different view types?
         viewModel.getUIState().observe(this, Observer {
             when(it) {
                 is PRViewModel.UIState.SUCCESS -> onPRFetched(it.pullRequests)
@@ -48,7 +36,26 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        setupScrollListener()
+        repoEditText.setOnEditorActionListener(this::onEnterClick)
+        ownerEditText.setOnEditorActionListener(this::onEnterClick)
+    }
+
+    private fun setUpRecyclerView() {
+        prRecyclerView.layoutManager = LinearLayoutManager(this)
+        adapter = PRListAdapter()
+        prRecyclerView.adapter = adapter
+
+        val layoutManager = prRecyclerView.layoutManager as LinearLayoutManager
+        prRecyclerView.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+
+            override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val totalItemCount = layoutManager.itemCount
+                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+
+                viewModel.onListScrolled(lastVisibleItem, totalItemCount)
+            }
+        })
     }
 
     private fun showErrorView(message: String?) {
@@ -70,13 +77,6 @@ class MainActivity : AppCompatActivity() {
         return false
     }
 
-    private fun hideAllViews() {
-        prRecyclerView.visibility = View.GONE
-        emptyView.visibility = View.GONE
-        loadingView.visibility = View.GONE
-        errorView.visibility = View.GONE
-    }
-
     private fun showEmptyView() {
         hideAllViews()
         emptyView.visibility = View.VISIBLE
@@ -94,22 +94,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun injectDependencies() {
-        viewModel = ViewModelProviders.of(this).get(PRViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, Injector.provideViewModelFactory()).get(PRViewModel::class.java)
     }
 
-    private fun setupScrollListener() {
-        val layoutManager = prRecyclerView.layoutManager as LinearLayoutManager
-
-        prRecyclerView.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
-
-            override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val totalItemCount = layoutManager.itemCount
-                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
-
-                viewModel.onListScrolled(lastVisibleItem, totalItemCount)
-            }
-        })
+    private fun hideAllViews() {
+        prRecyclerView.visibility = View.GONE
+        emptyView.visibility = View.GONE
+        loadingView.visibility = View.GONE
+        errorView.visibility = View.GONE
     }
 
     fun hideKeyboard() {
