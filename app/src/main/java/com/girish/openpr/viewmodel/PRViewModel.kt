@@ -35,10 +35,10 @@ class PRViewModel(val repository: ProjectRepository) : ViewModel() {
     fun fetchMore() {
         // TODO: handle error
         val disposable = repository.getMorePullRequests()
-            .subscribe({
+            .subscribe {
                 isFetching = false;
                 handleResults(it)
-            })
+            }
         compositeDisposable.add(disposable)
     }
 
