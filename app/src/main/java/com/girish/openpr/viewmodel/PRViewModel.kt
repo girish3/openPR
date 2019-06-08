@@ -8,23 +8,14 @@ import com.girish.openpr.model.data.PullRequest
 import com.girish.openpr.model.repository.ProjectRepository
 import io.reactivex.Observable
 
-class PRViewModel : ViewModel() {
+class PRViewModel(val repository: ProjectRepository) : ViewModel() {
 
     private val TAG = "PRViewModel"
-    private lateinit var repository : ProjectRepository
     private val uiState : MutableLiveData<UIState> = MutableLiveData()
     private val THRESHOLD: Int = 5
     private val _pullRequests = ArrayList<PullRequest>()
     private var isFetching = false
     private var hasMoreData = true
-
-    init {
-        injectDependencies()
-    }
-
-    private fun injectDependencies() {
-        repository = ProjectRepository
-    }
 
     // TODO: should you rather be returning LiveData?
     fun fetchPullRequest(author: String, repo: String) {
